@@ -1,3 +1,5 @@
+# Copyright (c) Diego Colombo. All rights reserved.
+# Licensed under the MIT license. See LICENSE file in the project root for full license information.
 from llama_index.core.schema import Document, BaseNode
 from llama_index.core import Settings, VectorStoreIndex, StorageContext
 from llama_index.core.ingestion import IngestionPipeline
