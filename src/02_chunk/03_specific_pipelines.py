@@ -3,9 +3,10 @@
 from llama_index.core.schema import Document, BaseNode
 from llama_index.core import Settings
 from llama_index.core.ingestion import IngestionPipeline
-from llama_index.core.node_parser import SemanticSplitterNodeParser, MarkdownNodeParser, JSONNodeParser
-from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core.node_parser import MarkdownNodeParser, JSONNodeParser
 from llama_index.core import SimpleDirectoryReader
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core.node_parser import SemanticSplitterNodeParser
 import os
 
 json_documents:list[Document] =  SimpleDirectoryReader(os.path.abspath("../../data/json"), filename_as_id=True).load_data(show_progress=True)
@@ -21,26 +22,28 @@ embed_model = OpenAIEmbedding(
 )
 
 Settings.embed_model = embed_model
+
 semanticSplitterNodeParser = SemanticSplitterNodeParser(embed_model=embed_model)
 semanticSplitterNodeParser.breakpoint_percentile_threshold = 95
 
 markdownPipeline = IngestionPipeline(
     transformations=[
-        MarkdownNodeParser(),
-        semanticSplitterNodeParser,
-        embed_model,
+        MarkdownNodeParser(), 
+        semanticSplitterNodeParser
     ]
 )
 
-nodes.extend(markdownPipeline.run(documents=markdown_documents, show_progress=True))
+print("Running Markdown pipeline")
+nodes.extend(markdownPipeline.run(documents= markdown_documents, show_progress=True))
+print(f"Created {len(nodes)} nodes.")
 
 jsonPipeline = IngestionPipeline(
     transformations=[
-        JSONNodeParser(),
-        embed_model,
+        JSONNodeParser()
     ]
 )
 
-nodes.extend(markdownPipeline.run(documents= markdown_documents, show_progress=True))
+print("Running JSON pipeline")
+nodes.extend(jsonPipeline.run(documents= json_documents, show_progress=True))
 
 print(f"Created {len(nodes)} nodes.")

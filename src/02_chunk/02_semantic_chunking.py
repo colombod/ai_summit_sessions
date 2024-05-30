@@ -5,11 +5,13 @@ from llama_index.core import Settings
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.node_parser import SemanticSplitterNodeParser
 from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core import SimpleDirectoryReader
 import os
 
-documents:list[Document] = []
+documents:list[Document] = SimpleDirectoryReader(os.path.abspath("../../data/markdown"), filename_as_id=True).load_data(show_progress=True)
 
 embed_model = OpenAIEmbedding(
+    model="text-embedding-3-small",
     api_key=os.getenv("OPENAI_API_KEY"),
 )
 
@@ -24,4 +26,9 @@ pipeline = IngestionPipeline(
     ]
 )
 
-nodes = pipeline.run(documents)
+nodes = pipeline.run(documents=documents, show_progress=True)
+
+print(f"Created {len(nodes)} nodes from {len(documents)} documents.")
+
+for node in nodes:
+    print(f"---------------------------node[{node.id_}] :\n{node.get_content()}")
