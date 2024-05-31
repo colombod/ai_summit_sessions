@@ -18,6 +18,7 @@ embed_model = OpenAIEmbedding(
 llm = OpenAI(
     model="gpt-3.5-turbo-0125",
     api_key=os.getenv("OPENAI_API_KEY"),
+
 )
 
 Settings.llm = llm
@@ -31,7 +32,7 @@ filters = MetadataFilters(
 print("Loading vector store...")
 
 vector_store = DuckDBVectorStore.from_params(database_name="pg.duckdb", persist_dir=os.path.abspath("../../vector_store"), embed_dim= embed_model.dimensions if embed_model.dimensions else 1536)
-index = VectorStoreIndex.from_vector_store(vector_store)
+index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model)
 
 retriever = index.as_retriever(filters=filters, similarity_top_k=5)
 
@@ -41,15 +42,16 @@ query_rewriter = QueryFusionRetriever(
     similarity_top_k=5,
     num_queries=4,
     mode=FUSION_MODES.DIST_BASED_SCORE,
+    verbose=True,
  )
 
 query_engine = FLAREInstructQueryEngine(
-    query_engine=RetrieverQueryEngine.from_args(retriever=retriever,llm=llm),
+    query_engine=RetrieverQueryEngine.from_args(retriever=query_rewriter,llm=llm),
     llm=llm,
     verbose=True,
 )
 
 
 print("Retrieving nodes using query rewriter...")
-response = query_engine.query("how do i restart polyglot notebook?")
+response = query_engine.query("how to .net interactive")
 print(response)

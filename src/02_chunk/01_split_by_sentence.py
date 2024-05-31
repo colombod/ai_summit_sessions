@@ -20,5 +20,5 @@ pipeline = IngestionPipeline(
 nodes = pipeline.run(documents=documents, show_progress=True)
 print(f"Created {len(nodes)} nodes from {len(documents)} documents.")
 
-for node in nodes:
-    print(f"---------------------------node[{node.id_}] :\n{node.get_content()}")
+# # for node in nodes:
+# #     print(f"---------------------------node[{node.id_}] :\n{node.get_content()}")

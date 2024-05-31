@@ -24,7 +24,7 @@ embed_model = OpenAIEmbedding(
 Settings.embed_model = embed_model
 
 semanticSplitterNodeParser = SemanticSplitterNodeParser(embed_model=embed_model)
-semanticSplitterNodeParser.breakpoint_percentile_threshold = 95
+semanticSplitterNodeParser.breakpoint_percentile_threshold = 40
 
 markdownPipeline = IngestionPipeline(
     transformations=[

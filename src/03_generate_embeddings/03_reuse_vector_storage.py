@@ -23,4 +23,4 @@ retriever = index.as_retriever()
 found = retriever.retrieve("polyglot notebook")
 
 for f in found: 
-    print(f.node_id, f.score)
+    print(f.node_id, f.score, f.node.get_content())

@@ -38,7 +38,7 @@ query_rewriter = QueryFusionRetriever(
  )
 
 print("Retrieving nodes...")
-found = query_rewriter.retrieve(".net interactive")
+found = query_rewriter.retrieve("how to .net interactive")
 
 for f in found: 
     print(f.node_id, f.score, f.node.get_content())
